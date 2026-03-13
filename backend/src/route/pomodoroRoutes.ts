@@ -17,13 +17,13 @@ export default function pomodoroRoutes(db: Database, io: Server) {
       const userId = req.body.userId;
 
       const session = await Pomodoro.create(db, io, userId, () => {
-        activeSessions.delete(userId)
-      })
+        activeSessions.delete(userId);
+      });
 
       activeSessions.set(userId, session);
       res.status(200).json({});
-    })
-  })
+    });
+  });
 
   router.post('/stop', (req, res) => {
     withErrorHandler(res, async () => {
@@ -35,8 +35,8 @@ export default function pomodoroRoutes(db: Database, io: Server) {
       await session.deletePomo();
       activeSessions.delete(userId);
       res.status(200).json({});
-    })
-  })
+    });
+  });
 
   return router;
 }

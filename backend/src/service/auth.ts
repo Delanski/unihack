@@ -13,12 +13,12 @@ async function getTotalTime(userId: string, db: Database) {
     FROM pomodoro_session WHERE user_id = ? AND end_time IS NOT NULL
   `, [userId]);
 
-  // returns OBJ 
+  // returns OBJ
   /**
    * {
    *    total_seconds
    *    total_min_studied
    *    total_sessions
-   * } 
+   * }
    */
 }

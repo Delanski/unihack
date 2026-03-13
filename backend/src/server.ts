@@ -1,6 +1,6 @@
 import express, { json, Response } from 'express';
 import { createServer } from 'http';
-import { Server        , Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 import morgan from 'morgan';
 
@@ -17,7 +17,7 @@ async function startServer() {
       origin: '*',
       methods: ['GET', 'POST']
     }
-  })
+  });
 
   const db = await initDatabase();
   const routes = initRoutes(db, io);
@@ -37,17 +37,17 @@ async function startServer() {
 
     // if token valid
     // attach user info to socket
-    //next()
+    // next()
     // else
     // next(new error)
-  })
+  });
 
   io.on('connection', (socket) => {
     console.log(socket.id);
 
     socket.on('pomodoro:join', (user) => {
       socket.join(`pomodoro:${socket.data.userId}`);
-    })
+    });
 
     socket.on('disconnect', () => {
       console.log(`Disconnected: ${socket.id}`);

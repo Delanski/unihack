@@ -1,12 +1,12 @@
-import { nanoid } from "nanoid";
-import { Server } from "socket.io";
-import { Database } from "sqlite";
-import { ServerError } from "../errors";
+import { nanoid } from 'nanoid';
+import { Server } from 'socket.io';
+import { Database } from 'sqlite';
+import { ServerError } from '../errors';
 
 const study_time = 25 * 60 * 1000;
 const break_time = 1 * 60 * 1000;
 const long_break = 3 * 60 * 1000;
-const pomo_to_long = 4
+const pomo_to_long = 4;
 const idle_limit_no_user = 30;
 const affectionPerPomo = 100;
 
@@ -27,12 +27,12 @@ export class Pomodoro {
   private readonly sessionId: string = nanoid();
 
   constructor(
-    private db: Database, 
-    private readonly io: Server, 
+    private db: Database,
+    private readonly io: Server,
     private readonly userId: string,
     private readonly onDelete: () => void
   ) {
-    this.roomId = `pomodoro:${userId}`
+    this.roomId = `pomodoro:${userId}`;
   }
 
   async deletePomo() {
@@ -40,6 +40,8 @@ export class Pomodoro {
     clearInterval(this.tickInterval);
 
     await this.updatePomoDb();
+    await this.db.run(`UPDATE pomodoro_session SET is_active = 0 WHERE id = ? 
+      `, [this.sessionId]);
   }
 
   // POMODORO SETUP -----------
@@ -53,19 +55,19 @@ export class Pomodoro {
   private async init() {
     await this.checkActivePomodoro();
 
-    const result = await this.db.run(
-      `INSERT INTO pomodoro_session (id, user_id, start_time) VALUES (?, ?, datetime('now'))`,
-      [this.sessionId, this.userId],
-    ); 
+    await this.db.run(
+      'INSERT INTO pomodoro_session (id, user_id, start_time) VALUES (?, ?, datetime(\'now\'))',
+      [this.sessionId, this.userId]
+    );
     this.startTimer();
   }
 
   private async checkActivePomodoro() {
     const pomo = await this.db.get(
-      `SELECT id FROM pomodoro_session WHERE user_id = ? AND end_time IS NULL`,
-    [this.userId]);
+      'SELECT id FROM pomodoro_session WHERE user_id = ? AND is_active = 0',
+      [this.userId]);
 
-    if (!pomo) throw new ServerError('POMO','Active Pomodoro session already exists for this user');
+    if (pomo) throw new ServerError('POMO', 'Active Pomodoro session already exists for this user');
   }
 
   // PRIVATE -----------
@@ -84,26 +86,26 @@ export class Pomodoro {
         }
       } else {
         this.emptyRoomForSec = 0;
-        this.emitUpdate()   
+        this.emitUpdate();
       }
     }, 1000);
   }
 
   private async switchState() {
-    if(this.state === POMO_STATE.study) {
+    if (this.state === POMO_STATE.study) {
       this.endOfNextTimer = new Date(Date.now() + study_time);
       this.emitUpdate();
-      
+
       this.timerId = setTimeout(async () => {
         this.pomoDone++;
         await this.updatePomoDb();
         await this.updateAffectionDb();
-        
+
         this.state = POMO_STATE.break;
         this.switchState();
       }, study_time);
     } else {
-      const time = (this.pomoDone % pomo_to_long == 0) ? long_break : break_time;
+      const time = (this.pomoDone % pomo_to_long === 0) ? long_break : break_time;
 
       this.endOfNextTimer = new Date(Date.now() + time);
       this.emitUpdate();
@@ -111,32 +113,31 @@ export class Pomodoro {
       this.timerId = setTimeout(() => {
         this.state = POMO_STATE.study;
         this.switchState();
-      }, time)
+      }, time);
     }
   }
-  
+
   private emitUpdate() {
     this.io.to(this.roomId).emit('pomodoro:tick', {
       state: this.state,
       timeRemaining: this.endOfNextTimer.getTime() - Date.now(),
       elapsedTime: Date.now() - this.start.getTime()
-    })
-  }  
+    });
+  }
 
   private async updatePomoDb() {
     await this.db.run(`
-      UPDATE pomodoro_session SET end_time = datetime('now') AND pomodoro_complete = (?) WHERE id = ?
-    `, [ this.pomoDone, this.sessionId ]);
+      UPDATE pomodoro_session SET end_time = datetime('now'), pomodoro_complete = (?) WHERE id = ?
+    `, [this.pomoDone, this.sessionId]);
   }
 
   private async updateAffectionDb() {
     await this.db.run(`
       UPDATE relationship SET r.points = r.points + ?
       WHERE char_id = (SELECT romance_character_id FROM users WHERE id ?)
-    `, [affectionPerPomo, this.userId])
+    `, [affectionPerPomo, this.userId]);
   }
 }
-
 
 // export class Pomodoro {
 //   private pomoDone = 0;
@@ -160,7 +161,7 @@ export class Pomodoro {
 //           this.state = POMO_STATE.break;
 //           this.switchState();
 //         }, study_time);
-      
+
 //         break;
 
 //       case POMO_STATE.break:
