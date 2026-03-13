@@ -5,9 +5,10 @@ import morgan from 'morgan';
 import config from './config';
 import { handleError } from './errors';
 import { initRoutes } from './route';
+import { initDatabase } from './data';
 
 async function startServer() {
-  const db = null; // initDatabase();
+  const db = await initDatabase();
   const routes = initRoutes(db);
   const app = express();
 
