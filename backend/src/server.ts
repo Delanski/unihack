@@ -1,18 +1,26 @@
 import express, { json, Response } from 'express';
-import expressWs from 'express-ws';
+import { createServer } from 'http';
+import { Server        , Socket } from 'socket.io';
 import cors from 'cors';
 import morgan from 'morgan';
+
 import config from './config';
 import { handleError } from './errors';
 import { initRoutes } from './route';
 import { initDatabase } from './data';
 
 async function startServer() {
-  const db = await initDatabase();
-  const routes = initRoutes(db);
   const app = express();
+  const server = createServer(app);
+  const io = new Server(server, {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST']
+    }
+  })
 
-  expressWs(app);
+  const db = await initDatabase();
+  const routes = initRoutes(db, io);
 
   // Middleware
   app.use(json());
@@ -23,7 +31,30 @@ async function startServer() {
   app.use('/user', routes.user);
   app.use('/pomodoro', routes.pomodoro);
 
-  const server = app.listen(config.port, config.ip, () => {
+  // Socket auth middleware
+  io.use(async (socket, next) => {
+    const token = socket.handshake.auth.token;
+
+    // if token valid
+    // attach user info to socket
+    //next()
+    // else
+    // next(new error)
+  })
+
+  io.on('connection', (socket) => {
+    console.log(socket.id);
+
+    socket.on('pomodoro:join', (user) => {
+      socket.join(`pomodoro:${socket.data.userId}`);
+    })
+
+    socket.on('disconnect', () => {
+      console.log(`Disconnected: ${socket.id}`);
+    });
+  });
+
+  server.listen(config.port, config.ip, () => {
     console.log(`Server is up and running! http://${config.ip}:${config.port}/`);
   });
 
