@@ -1,7 +1,7 @@
 import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 
-const DB_NAME = './backend/prayers.db';
+const DB_NAME = './prayers.db';
 
 initDatabase();
 
