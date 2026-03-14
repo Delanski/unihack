@@ -9,7 +9,6 @@ import { handleError } from './errors';
 import { initRoutes } from './route';
 import { initDatabase } from './data';
 import * as Sessions from './service/sessions';
-import { error } from 'console';
 
 async function startServer() {
   const app = express();
@@ -33,6 +32,7 @@ async function startServer() {
   app.use('/user', routes.user);
   app.use('/pomodoro', routes.pomodoro);
   app.use('/todo', routes.toDo);
+  app.use('/scene', routes.scene);
 
   // Socket auth middleware
   io.use(async (socket, next) => {
@@ -42,7 +42,8 @@ async function startServer() {
       socket.data.userId = sessionInfo.userId;
       next();
     } catch (err) {
-      next(new Error('session is empty'));
+      console.log(err);
+      next(new Error('session is wrong or empty :)'));
     }
   });
 
@@ -65,16 +66,14 @@ async function startServer() {
   process.on('SIGINT', () => {
     console.log('\nShutting down server gracefully...');
 
-
-
     server.close(() => {
       console.log('🍂 Goodbye!');
       process.exit();
     });
 
     io.close(() => {
-      console.log("socket io ded")
-    })
+      console.log('socket io ded');
+    });
   });
 }
 

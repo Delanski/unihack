@@ -98,8 +98,8 @@ export default function userRoutes(db: Database) {
 
       const result = await User.getUserStatistics(db, userId);
       res.json(result);
-    })
-  })
+    });
+  });
 
   return router;
 }

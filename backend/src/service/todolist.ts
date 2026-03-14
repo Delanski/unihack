@@ -37,8 +37,8 @@ export async function completeTask(db: Database, userId: string, id: number) {
 
   const { count } = await db.get('SELECT count(*) as count FROM to_do WHERE created_by = ? AND completed_at = date(\'now\')', [userId]);
   const points = count < dailyRewardedToDo ? pointsAwarded : 0;
-  
-  await db.run(`UPDATE to_do SET completed_at = date('now') WHERE id = ?`, [id]);
+
+  await db.run('UPDATE to_do SET completed_at = date(\'now\') WHERE id = ?', [id]);
 
   await db.run(`
     UPDATE relationship SET points = points + ?
