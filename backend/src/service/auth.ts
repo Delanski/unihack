@@ -75,7 +75,7 @@ export async function newEmail(db: Database, id: string, email: string) {
     throw new ServerError('', 'Invalid email address');
   }
   const emailLower = email.toLowerCase();
-  await db.run('UPDATE users SET password = ? WHERE id = ?', [emailLower, id]);
+  await db.run('UPDATE users SET email = ? WHERE id = ?', [emailLower, id]);
   return {};
 }
 
