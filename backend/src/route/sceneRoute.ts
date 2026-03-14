@@ -2,42 +2,42 @@ import { Router } from 'express';
 import { Database } from 'sqlite';
 import { withErrorHandler } from '../server';
 import * as Sessions from '../service/sessions';
-import * as ToDos from '../service/todolist';
+import * as Scene from '../service/scene';
 
-export default function toDoRoutes(db: Database) {
+export default function sceneRoutes(db: Database) {
   const router = Router();
 
-  /** POST /todo/create */
-  router.post('/create', (req, res) => {
+  /** GET /scene */
+  router.get('/', (req, res) => {
     withErrorHandler(res, async () => {
       const sessionId = req.header('session');
-      const { task } = req.body;
       const userId = Sessions.returnInfo(sessionId).userId;
 
-      const result = await ToDos.createTask(db, userId, task);
+      const reuslt = await Scene.getCharacterScenes(db, userId);
+      res.json(reuslt);
+    });
+  });
+
+  /** GET /scene/:sceneId/dialogue */
+  router.get('/:sceneId/dialogue', (req, res) => {
+    withErrorHandler(res, async () => {
+      const sceneId = req.params.sceneId as string;
+      const sessionId = req.header('session');
+      const userId = Sessions.returnInfo(sessionId).userId;
+
+      const result = await Scene.getSceneDialogue(db, userId, sceneId);
       res.json(result);
     });
   });
 
-  /** PUT /todo/complete/:id */
-  router.put('/complete/:id', (req, res) => {
+  /** GET /scene/:sceneId */
+  router.get('/:sceneId', (req, res) => {
     withErrorHandler(res, async () => {
-      const sessionId = req.header('session');
-      const id = parseInt(req.params.id);
-      const userId = Sessions.returnInfo(sessionId).userId;
-
-      const result = await ToDos.completeTask(db, userId, id);
-      res.json(result);
-    });
-  });
-
-  /** GET /todo/get */
-  router.get('/get', (req, res) => {
-    withErrorHandler(res, async () => {
+      const sceneId = req.params.sceneId as string;
       const sessionId = req.header('session');
       const userId = Sessions.returnInfo(sessionId).userId;
 
-      const result = await ToDos.getLastTasks(db, userId);
+      const result = await Scene.getScene(db, userId, sceneId);
       res.json(result);
     });
   });

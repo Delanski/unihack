@@ -4,6 +4,7 @@ import { ServerError } from '../errors';
 const toDoLimit = 15;
 const dailyRewardedToDo = 3;
 const pointsAwarded = 50;
+const getAmtTasks = 20;
 
 export async function createTask(db: Database, userId: string, task: string) {
   const { count } = await db.get('SELECT COUNT(*) as count FROM to_do WHERE created_by = ?', [userId]);
@@ -14,7 +15,7 @@ export async function createTask(db: Database, userId: string, task: string) {
   return {};
 }
 
-export async function getLast20Tasks(db: Database, userId: string) {
+export async function getLastTasks(db: Database, userId: string) {
   const res = await db.all(`
         SELECT
             id,
@@ -24,8 +25,8 @@ export async function getLast20Tasks(db: Database, userId: string) {
                 ELSE 1
             END AS isCompleted
         FROM to_do WHERE created_by = ?
-        ORDER BY isCompleted ASC, id ASC LIMIT 20
-    `, [userId]);
+        ORDER BY isCompleted ASC, id ASC LIMIT ?
+    `, [userId, getAmtTasks]);
 
   return res;
 }
@@ -37,8 +38,8 @@ export async function completeTask(db: Database, userId: string, id: number) {
 
   const { count } = await db.get('SELECT count(*) as count FROM to_do WHERE created_by = ? AND completed_at = date(\'now\')', [userId]);
   const points = count < dailyRewardedToDo ? pointsAwarded : 0;
-  
-  await db.run(`UPDATE to_do SET completed_at = date('now') WHERE id = ?`, [id]);
+
+  await db.run('UPDATE to_do SET completed_at = date(\'now\') WHERE id = ?', [id]);
 
   await db.run(`
     UPDATE relationship SET points = points + ?

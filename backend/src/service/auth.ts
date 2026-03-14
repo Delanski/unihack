@@ -121,11 +121,11 @@ export async function getUserStatistics(db: Database, userId: string) {
     FROM relationship
     WHERE char_id = (SELECT romance_character_id FROM users WHERE id = ?)
     AND user_id = ?
-  `, [userId, userId])
+  `, [userId, userId]);
 
   const username = await db.get('SELECT username FROM users WHERE id = ?', [userId]);
 
-  return { username: username, pomodoro: pomodoro, toDo: todo, relationship: relationship};
+  return { username: username, pomodoro: pomodoro, toDo: todo, relationship: relationship };
 }
 
 export async function deleteAccount(db: Database, userId: string, password: string) {

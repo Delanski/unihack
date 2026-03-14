@@ -43,3 +43,10 @@ export default function pomodoroRoutes(db: Database, io: Server) {
 
   return router;
 }
+
+export async function cleanupPomodoroSessions() {
+  for (const [userId, pomoSession] of activeSessions) {
+    await pomoSession.deletePomo();
+    activeSessions.delete(userId);
+  }
+}

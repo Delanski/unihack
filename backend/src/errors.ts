@@ -17,6 +17,7 @@ export function errorToStatus(e: string): number {
   switch (e) {
     // TODO: Add other error types here
     case 'UNAUTHORIZED':
+    case 'UNAUTHORISED':
       return 401;
     case 'POMO':
       return 403;
