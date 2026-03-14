@@ -140,8 +140,8 @@ export async function logoutSession(sessionId?: string) {
 }
 
 async function initalisePomme(db: Database, userId: string) {
-  await db.run(`INSERT INTO relationship (user_id, char_id) VALUES (?, 'pomme_tutorial')`, [userId]);
-
+  await db.run('INSERT INTO relationship (user_id, char_id) VALUES (?, \'pomme_tutorial\')', [userId]);
+  await db.run('UPDATE users SET romance_character_id = \'pomme_tutorial\' WHERE id = ?', [userId]);
   // set to lvl 1 automatically
   // await db.run(`UPDATE relationship SET points = 500 WHERE user_id = ? AND char_id = 'pomme_tutorial'`, [userId])
 }

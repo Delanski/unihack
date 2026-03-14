@@ -1,6 +1,6 @@
 import express, { json, Response } from 'express';
 import { createServer } from 'http';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import cors from 'cors';
 import morgan from 'morgan';
 
@@ -31,6 +31,7 @@ async function startServer() {
   // Routes
   app.use('/user', routes.user);
   app.use('/pomodoro', routes.pomodoro);
+  app.use('/todo', routes.toDo);
 
   // Socket auth middleware
   io.use(async (socket, next) => {

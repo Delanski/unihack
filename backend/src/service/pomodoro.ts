@@ -133,9 +133,10 @@ export class Pomodoro {
 
   private async updateAffectionDb() {
     await this.db.run(`
-      UPDATE relationship SET r.points = r.points + ?
-      WHERE char_id = (SELECT romance_character_id FROM users WHERE id ?)
-    `, [affectionPerPomo, this.userId]);
+      UPDATE relationship SET points = points + ?
+      WHERE char_id = (SELECT romance_character_id FROM users WHERE id = ?)
+      AND user_id = ?
+    `, [affectionPerPomo, this.userId, this.userId]);
   }
 }
 
