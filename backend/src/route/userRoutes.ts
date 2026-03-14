@@ -10,7 +10,7 @@ export default function userRoutes(db: Database) {
   /** POST /user/register */
   router.post('/register', (req, res) => {
     withErrorHandler(res, async () => {
-      const {password, email, username} = req.body;
+      const { password, email, username } = req.body;
 
       const result = await User.authRegister(db, password, username, email);
       res.setHeader('session', await Sessions.createNew(result));
@@ -21,7 +21,7 @@ export default function userRoutes(db: Database) {
   /** POST /user/login */
   router.post('/login', (req, res) => {
     withErrorHandler(res, async () => {
-      const {loginForm, password} = req.body;
+      const { loginForm, password } = req.body;
 
       const result = await User.authLogin(db, loginForm, password);
       res.setHeader('session', await Sessions.createNew(result));
@@ -89,7 +89,6 @@ export default function userRoutes(db: Database) {
       res.json(result);
     });
   });
-
 
   // update to field
 

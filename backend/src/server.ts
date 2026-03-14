@@ -8,6 +8,7 @@ import config from './config';
 import { handleError } from './errors';
 import { initRoutes } from './route';
 import { initDatabase } from './data';
+import * as Sessions from './service/sessions';
 
 async function startServer() {
   const app = express();
@@ -36,8 +37,10 @@ async function startServer() {
     const token = socket.handshake.auth.token;
 
     // if token valid
+    const sessionInfo = Sessions.returnInfo(token);
+    socket.data.userId = sessionInfo.userId;
     // attach user info to socket
-    // next()
+    next();
     // else
     // next(new error)
   });
@@ -45,7 +48,7 @@ async function startServer() {
   io.on('connection', (socket) => {
     console.log(socket.id);
 
-    socket.on('pomodoro:join', (user) => {
+    socket.on('pomodoro:join', () => {
       socket.join(`pomodoro:${socket.data.userId}`);
     });
 

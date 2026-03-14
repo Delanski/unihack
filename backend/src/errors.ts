@@ -20,6 +20,7 @@ export function errorToStatus(e: string): number {
       return 401;
     case 'POMO':
       return 403;
+    case '':
     case 'NO_POMO':
       return 404;
     // If we don't recognise the error type, we should give an error to help us find the place where
