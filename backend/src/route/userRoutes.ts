@@ -90,7 +90,16 @@ export default function userRoutes(db: Database) {
     });
   });
 
-  // update to field
+  /** GET /user/statistics */
+  router.get('/statistics', (req, res) => {
+    withErrorHandler(res, async () => {
+      const sessionId = req.header('session');
+      const userId = Sessions.returnInfo(sessionId).userId;
+
+      const result = await User.getUserStatistics(db, userId);
+      res.json(result);
+    })
+  })
 
   return router;
 }

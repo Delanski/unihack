@@ -75,7 +75,7 @@ export async function newEmail(db: Database, id: string, email: string) {
     throw new ServerError('', 'Invalid email address');
   }
   const emailLower = email.toLowerCase();
-  await db.run('UPDATE users SET password = ? WHERE id = ?', [emailLower, id]);
+  await db.run('UPDATE users SET email = ? WHERE id = ?', [emailLower, id]);
   return {};
 }
 
@@ -91,31 +91,41 @@ export async function newUsername(db: Database, username: string, id: string) {
   if (!usernameRegex.test(username) || username.length < minUsernameLength) {
     throw new ServerError('', `Username must be at least ${minUsernameLength} characters and alphanumeric only.`);
   }
-  const existingUsername = await db.get('SELECT username FROM users WHERE username = ?', [username]);
+  const existingUsername = await db.get('SELECT username FROM users WHERE username = ? AND id != ?', [username, id]);
   if (existingUsername) {
     throw new ServerError('', 'Username is already in use.');
   }
   await db.run('UPDATE users SET username = ? WHERE id = ?', [username, id]);
   return {};
 }
-// time in pomodoroTimer
-async function getTotalTime(userId: string, db: Database) {
-  const time = await db.get(`
+
+export async function getUserStatistics(db: Database, userId: string) {
+  const pomodoro = await db.get(`
     SELECT 
-      SUM(strftime('%s', end_time) - strftime('%s', start_time)) AS total_seconds,
-      SUM(pomodoro_complete) * 25 AS total_mins_studied,
-      COUNT(*) AS total_sessions
+      SUM(strftime('%s', end_time) - strftime('%s', start_time)) AS totalSeconds,
+      SUM(pomodoro_complete) AS studySessionsComplete, -- 25 mins
+      COUNT(*) AS total_sessions -- overall
     FROM pomodoro_session WHERE user_id = ? AND end_time IS NOT NULL
   `, [userId]);
 
-  // returns OBJ
-  /**
-   * {
-   *    total_seconds
-   *    total_min_studied
-   *    total_sessions
-   * }
-   */
+  const todo = await db.get(`
+    SELECT
+      COUNT(*) as totalToDoMade,
+      SUM(CASE WHEN completed_at IS NOT NULL THEN 1 ELSE 0 END)
+    FROM to_do WHERE created_by = ?
+  `, [userId]);
+
+  const relationship = await db.get(`
+    SELECT
+      affection_lvl, points
+    FROM relationship
+    WHERE char_id = (SELECT romance_character_id FROM users WHERE id = ?)
+    AND user_id = ?
+  `, [userId])
+
+  const username = await db.get('SELECT username FROM users WHERE id = ?', [userId]);
+
+  return { username: username, pomodoro: pomodoro, toDo: todo, relationship: relationship};
 }
 
 export async function deleteAccount(db: Database, userId: string, password: string) {
