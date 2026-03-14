@@ -102,8 +102,8 @@ export async function newUsername(db: Database, username: string, id: string) {
 export async function getUserStatistics(db: Database, userId: string) {
   const pomodoro = await db.get(`
     SELECT 
-      SUM(strftime('%s', end_time) - strftime('%s', start_time)) AS totalSeconds,
-      SUM(pomodoro_complete) AS studySessionsComplete, -- 25 mins
+      IFNULL(SUM(strftime('%s', end_time) - strftime('%s', start_time)),0) AS totalSeconds,
+      IFNULL(SUM(pomodoro_complete),0) AS studySessionsComplete, -- 25 mins
       COUNT(*) AS total_sessions -- overall
     FROM pomodoro_session WHERE user_id = ? AND end_time IS NOT NULL
   `, [userId]);
@@ -111,7 +111,7 @@ export async function getUserStatistics(db: Database, userId: string) {
   const todo = await db.get(`
     SELECT
       COUNT(*) as totalToDoMade,
-      SUM(CASE WHEN completed_at IS NOT NULL THEN 1 ELSE 0 END)
+      SUM(CASE WHEN completed_at IS NOT NULL THEN 1 ELSE 0 END) as toDoComplete
     FROM to_do WHERE created_by = ?
   `, [userId]);
 
@@ -121,7 +121,7 @@ export async function getUserStatistics(db: Database, userId: string) {
     FROM relationship
     WHERE char_id = (SELECT romance_character_id FROM users WHERE id = ?)
     AND user_id = ?
-  `, [userId])
+  `, [userId, userId])
 
   const username = await db.get('SELECT username FROM users WHERE id = ?', [userId]);
 

@@ -9,6 +9,7 @@ import { handleError } from './errors';
 import { initRoutes } from './route';
 import { initDatabase } from './data';
 import * as Sessions from './service/sessions';
+import { error } from 'console';
 
 async function startServer() {
   const app = express();
@@ -35,15 +36,14 @@ async function startServer() {
 
   // Socket auth middleware
   io.use(async (socket, next) => {
-    const token = socket.handshake.auth.token;
-
-    // if token valid
-    const sessionInfo = Sessions.returnInfo(token);
-    socket.data.userId = sessionInfo.userId;
-    // attach user info to socket
-    next();
-    // else
-    // next(new error)
+    try {
+      const token = socket.handshake.headers.session as string | undefined;
+      const sessionInfo = Sessions.returnInfo(token);
+      socket.data.userId = sessionInfo.userId;
+      next();
+    } catch (err) {
+      next(new Error('session is empty'));
+    }
   });
 
   io.on('connection', (socket) => {
@@ -64,10 +64,17 @@ async function startServer() {
 
   process.on('SIGINT', () => {
     console.log('\nShutting down server gracefully...');
+
+
+
     server.close(() => {
       console.log('🍂 Goodbye!');
       process.exit();
     });
+
+    io.close(() => {
+      console.log("socket io ded")
+    })
   });
 }
 

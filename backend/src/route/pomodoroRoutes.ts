@@ -4,6 +4,7 @@ import { withErrorHandler } from '../server';
 import { Pomodoro } from '../service/pomodoro';
 import { Server } from 'socket.io';
 import { ServerError } from '../errors';
+import * as Sessions from '../service/sessions';
 
 const activeSessions = new Map<string, Pomodoro>();
 
@@ -14,7 +15,8 @@ export default function pomodoroRoutes(db: Database, io: Server) {
   // update to field
   router.post('/start', (req, res) => {
     withErrorHandler(res, async () => {
-      const userId = req.body.userId;
+      const sessionId = req.header('session');
+      const userId = Sessions.returnInfo(sessionId).userId;
 
       const session = await Pomodoro.create(db, io, userId, () => {
         activeSessions.delete(userId);
@@ -27,12 +29,13 @@ export default function pomodoroRoutes(db: Database, io: Server) {
 
   router.post('/stop', (req, res) => {
     withErrorHandler(res, async () => {
-      const userId = req.body.userId;
-      const session = activeSessions.get(userId);
+      const sessionId = req.header('session');
+      const userId = Sessions.returnInfo(sessionId).userId;
+      const pomoSession = activeSessions.get(userId);
 
-      if (!session) throw new ServerError('NO_POMO', 'No active session');
+      if (!pomoSession) throw new ServerError('NO_POMO', 'No active session');
 
-      await session.deletePomo();
+      await pomoSession.deletePomo();
       activeSessions.delete(userId);
       res.status(200).json({});
     });

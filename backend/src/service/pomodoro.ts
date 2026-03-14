@@ -6,12 +6,15 @@ import { ServerError } from '../errors';
 const study_time = 25 * 60 * 1000;
 const break_time = 1 * 60 * 1000;
 const long_break = 3 * 60 * 1000;
+// const study_time = 25 * 1000;
+// const break_time = 1 * 1000;
+// const long_break = 3 * 1000;
 const pomo_to_long = 4;
 const idle_limit_no_user = 30;
 const affectionPerPomo = 100;
 
 enum POMO_STATE {
-  study, break
+  study = 'Studying', break = 'On Break'
 }
 
 export class Pomodoro {
@@ -64,7 +67,7 @@ export class Pomodoro {
 
   private async checkActivePomodoro() {
     const pomo = await this.db.get(
-      'SELECT id FROM pomodoro_session WHERE user_id = ? AND is_active = 0',
+      'SELECT id FROM pomodoro_session WHERE user_id = ? AND is_active = 1',
       [this.userId]);
 
     if (pomo) throw new ServerError('POMO', 'Active Pomodoro session already exists for this user');
