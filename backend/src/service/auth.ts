@@ -4,8 +4,8 @@ import { Database } from 'sqlite';
 import { nanoid } from 'nanoid';
 
 
-async function authLogin(db:Database, username:string, email:string, password:string){
-    const info = await db.get("SELECT * from users WHERE (email = ? OR username = ?)", [email, username]);
+async function authLogin(db:Database, loginForm:string, password:string){
+    const info = await db.get("SELECT * from users WHERE (email = ? OR username = ?)", [loginForm, loginForm]);//idk what to do about here 
     if (!info){
         throw new Error ("User not found");
     }
@@ -83,7 +83,7 @@ async function newUsername(db:Database, username:string, id: string) {
     if (!currUsername) {
         throw new Error ("User not found");
     }
-    // check the new username against criteria
+ 
     const usernameRegex = /^[A-Za-z0-9]+$/;
     const minUsernameLength = 3; 
     if (!usernameRegex.test(username) || username.length < minUsernameLength) {
@@ -93,6 +93,6 @@ async function newUsername(db:Database, username:string, id: string) {
     if (existingUsername) {
         throw new Error("Username is already in use.");
     }
-    await db.run("UPDATE users SET username = ? WHERE id = ?", [username, id])
+    await db.run("UPDATE users SET username = ? WHERE id = ?", [username, id]);
     return {};
 }
