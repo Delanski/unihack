@@ -123,7 +123,7 @@ export async function deleteAccount(db: Database, userId: string, password: stri
 
   if (!user) throw new ServerError('INAVLID_ACCOUNT_ID', 'No account found for this id');
 
-  if (await !bcrypt.compare(password, user.password)) throw new ServerError('INVALID_CREDENTIAL', 'Password is incorrect');
+  if (!(await bcrypt.compare(password, user.password))) throw new ServerError('INVALID_CREDENTIAL', 'Password is incorrect');
 
   Sessions.removeAllForUser(userId);
   await db.run('DELETE FROM users WHERE id = ?', [userId]);
