@@ -1,40 +1,39 @@
 import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 
-const DB_NAME = "./prayers.db"
+const DB_NAME = './backend/prayers.db';
 
 initDatabase();
 
 export async function openDatabase() {
-    return open({
-        filename: DB_NAME,
-        driver: sqlite3.Database
-    })
+  return open({
+    filename: DB_NAME,
+    driver: sqlite3.Database
+  });
 }
 
 export async function initDatabase(): Promise<Database<sqlite3.Database, sqlite3.Statement>> {
-    const db = await openDatabase();
+  const db = await openDatabase();
 
-    await db.exec(`
+  await db.exec(`
         CREATE TABLE IF NOT EXISTS users (
-            id STRING PRIMARY KEY,
+            id VARCHAR(255) PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
-            romance_character_id STRING,
-            total_study TIME DEFAULT 0,
+            romance_character_id VARCHAR(255),
             FOREIGN KEY (romance_character_id) references chars(id)
         );
 
         CREATE TABLE IF NOT EXISTS chars (
-            id STRING PRIMARY KEY,
+            id VARCHAR(255) PRIMARY KEY,
             name VARCHAR(255),
             description VARCHAR(255)
         );
 
         CREATE TABLE IF NOT EXISTS  relationship (
-            user_id STRING,
-            char_id STRING,
+            user_id VARCHAR(255),
+            char_id VARCHAR(255),
             points INTEGER,
             affection_lvl INTEGER,
             PRIMARY KEY(user_id, char_id),
@@ -42,26 +41,20 @@ export async function initDatabase(): Promise<Database<sqlite3.Database, sqlite3
             FOREIGN KEY (char_id) references chars(id)
         );
 
-        CREATE TABLE IF NOT EXISTS  pomodoro_session (
-            id STRING PRIMARY KEY,
-            user_id STRING,
+        CREATE TABLE IF NOT EXISTS pomodoro_session (
+            id VARCHAR(255) PRIMARY KEY,
+            user_id VARCHAR(255),
             start_time TIME,
             end_time TIME,
             pomodoro_complete INTEGER, -- default 0
-            state VARCHAR(255), -- work, break, long break - deafult 25, 5, 15 - complete
+            is_active INTEGER NOT NULL DEFAULT 1,
             FOREIGN KEY (user_id) references users(id)
         );
+    `);
 
-        CREATE TABLE IF NOT EXISTS  timers (
-            timer_id STRING PRIMARY KEY, -- i think it is idk
-            user_id STRING,
-            FOREIGN KEY (user_id) references users(id)
-        );
-    `)
+  // await db.exec(`
+  //     INSERT INTO chars (id, name, description) VALUES ('place_id', 'apple', 'placeholder')
+  // `)
 
-    await db.exec(`
-        INSERT INTO chars (id, name, description) VALUES ('place_id', 'apple', 'placeholder')
-    `)
-
-    return db;
+  return db;
 }

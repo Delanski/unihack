@@ -1,14 +1,12 @@
 import { Database } from 'sqlite';
-import { Router } from 'express';
+import { Server } from 'socket.io';
 
 import userRoutes from './userRoutes';
 import pomodoroRoutes from './pomodoroRoutes';
 
-export function initRoutes(db: Database) {
-  const routes: Record<string, Router> = {
+export function initRoutes(db: Database, io: Server) {
+  return {
     user: userRoutes(db),
-    pomodoro: pomodoroRoutes(db)
-  };
-
-  return routes;
+    pomodoro: pomodoroRoutes(db, io)
+  }; ;
 }

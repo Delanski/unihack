@@ -18,6 +18,10 @@ export function errorToStatus(e: string): number {
     // TODO: Add other error types here
     case 'UNAUTHORIZED':
       return 401;
+    case 'POMO':
+      return 403;
+    case 'NO_POMO':
+      return 404;
     // If we don't recognise the error type, we should give an error to help us find the place where
     // we need to add the mapping.
     default:
