@@ -47,6 +47,7 @@ export async function authRegister(db: Database, password: string, username: str
   const userId = nanoid();
 
   await db.run('INSERT INTO users (id, username, email, password) VALUES (?,?,?,?)', [userId, username, emailLower, hashedPassword]);
+  await initalisePomme(db, userId);
   return userId;
 }
 
@@ -136,4 +137,11 @@ export async function logoutSession(sessionId?: string) {
   Sessions.remove(sessionId as string);
 
   return {};
+}
+
+async function initalisePomme(db: Database, userId: string) {
+  await db.run(`INSERT INTO relationship (user_id, char_id) VALUES (?, 'pomme_tutorial')`, [userId]);
+
+  // set to lvl 1 automatically
+  // await db.run(`UPDATE relationship SET points = 500 WHERE user_id = ? AND char_id = 'pomme_tutorial'`, [userId])
 }

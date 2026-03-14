@@ -34,8 +34,8 @@ export async function initDatabase(): Promise<Database<sqlite3.Database, sqlite3
         CREATE TABLE IF NOT EXISTS  relationship (
             user_id VARCHAR(255),
             char_id VARCHAR(255),
-            points INTEGER,
-            affection_lvl INTEGER,
+            points INTEGER DEFAULT 0,
+            affection_lvl INTEGER DEFAULT 0,
             PRIMARY KEY(user_id, char_id),
             FOREIGN KEY (user_id) references users(id),
             FOREIGN KEY (char_id) references chars(id)
@@ -52,9 +52,18 @@ export async function initDatabase(): Promise<Database<sqlite3.Database, sqlite3
         );
     `);
 
-  // await db.exec(`
-  //     INSERT INTO chars (id, name, description) VALUES ('place_id', 'apple', 'placeholder')
-  // `)
+  await db.exec(`
+      INSERT INTO chars (id, name, description) VALUES ('pomme_tutorial', 'pomme', 'placeholder') ON CONFLICT(id) DO NOTHING;
+
+      CREATE TRIGGER IF NOT EXISTS increase_affection 
+      AFTER UPDATE OF points ON relationship WHEN NEW.points >= 500
+      BEGIN
+        UPDATE relationship 
+        SET points = NEW.points - 500,
+            affection_lvl = affection_lvl + 1 
+      	WHERE user_id = NEW.user_id AND char_id = NEW.char_id;
+      END;
+  `)
 
   return db;
 }
