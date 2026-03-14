@@ -37,7 +37,7 @@ export default function toDoRoutes(db: Database) {
       const sessionId = req.header('session');
       const userId = Sessions.returnInfo(sessionId).userId;
 
-      const result = await ToDos.getLast20Tasks(db, userId);
+      const result = await ToDos.getLastTasks(db, userId);
       res.json(result);
     });
   });

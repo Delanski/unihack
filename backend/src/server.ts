@@ -9,6 +9,7 @@ import { handleError } from './errors';
 import { initRoutes } from './route';
 import { initDatabase } from './data';
 import * as Sessions from './service/sessions';
+import { cleanupPomodoroSessions } from './route/pomodoroRoutes';
 
 async function startServer() {
   const app = express();
@@ -65,6 +66,8 @@ async function startServer() {
 
   process.on('SIGINT', () => {
     console.log('\nShutting down server gracefully...');
+
+    cleanupPomodoroSessions();
 
     server.close(() => {
       console.log('🍂 Goodbye!');

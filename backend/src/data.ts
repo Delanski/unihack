@@ -15,6 +15,9 @@ export async function openDatabase() {
 export async function initDatabase(): Promise<Database<sqlite3.Database, sqlite3.Statement>> {
   const db = await openDatabase();
 
+  /** Enables on delete cascade */
+  await db.exec('PRAGMA foreign_keys = ON');
+
   /** Initalise Tables */
   await db.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -38,7 +41,7 @@ export async function initDatabase(): Promise<Database<sqlite3.Database, sqlite3
       points INTEGER DEFAULT 0,
       affection_lvl INTEGER DEFAULT 0,
       PRIMARY KEY(user_id, char_id),
-      FOREIGN KEY (user_id) references users(id),
+      FOREIGN KEY (user_id) references users(id) ON DELETE CASCADE,
       FOREIGN KEY (char_id) references chars(id)
     );
 
@@ -49,7 +52,7 @@ export async function initDatabase(): Promise<Database<sqlite3.Database, sqlite3
       end_time TEXT,
       pomodoro_complete INTEGER, -- default 0
       is_active INTEGER NOT NULL DEFAULT 1,
-      FOREIGN KEY (user_id) references users(id)
+      FOREIGN KEY (user_id) references users(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS to_do (
@@ -57,7 +60,7 @@ export async function initDatabase(): Promise<Database<sqlite3.Database, sqlite3
       created_by VARCHAR(255),
       task VARCHAR(255),
       completed_at VARCHAR(255),
-      FOREIGN KEY (created_by) references users(id)
+      FOREIGN KEY (created_by) references users(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS scene (

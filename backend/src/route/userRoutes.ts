@@ -41,8 +41,8 @@ export default function userRoutes(db: Database) {
     });
   });
 
-  /** POST /user/delete */
-  router.post('/delete', (req, res) => {
+  /** DELETE /user/delete */
+  router.delete('/delete', (req, res) => {
     withErrorHandler(res, async () => {
       const sessionId = req.header('session');
       const { password } = req.body;
@@ -50,7 +50,7 @@ export default function userRoutes(db: Database) {
 
       const result = await User.deleteAccount(db, userId, password);
       res.removeHeader('session');
-      res.json(result);
+      res.status(204).json(result);
     });
   });
 
@@ -78,7 +78,7 @@ export default function userRoutes(db: Database) {
     });
   });
 
-  /** PUT /user/update/email */
+  /** PUT /user/update/username */
   router.put('/update/username', (req, res) => {
     withErrorHandler(res, async () => {
       const sessionId = req.header('session');
