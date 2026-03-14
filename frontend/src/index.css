@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap');
+
+#root {
+  width: 1126px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  background-image: url("./assets/pomme room.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  cursor: url('./assets/apple.png'), auto;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 170px;
+  gap: 20px;
+
+  cursor: inherit;
+}
+
+.navButton {
+  width: 110px;
+  height: 70px;
+  padding: 10px;
+  border-radius: 10px;        
+  border: 3px solid #703535; 
+  cursor: inherit;
+  font-size: 20px;
+  font-family: 'Comic Relief', cursive;
+  color: rgb(255, 255, 255);                     
+  background-color: #b27b7b;   
+
+  transition: transform 0.2s ease;
+}
+
+.navButton:hover {
+  transform: scale(1.15);
+}
