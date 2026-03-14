@@ -10,14 +10,22 @@ export default function userRoutes(db: Database) {
   /** POST /user/register */
   router.post('/register', (req, res) => {
     withErrorHandler(res, async () => {
+      const {password, email, username} = req.body;
 
+      const result = await User.authRegister(db, password, username, email);
+      res.setHeader('session', await Sessions.createNew(result));
+      res.json({ userId: result });
     });
   });
 
   /** POST /user/login */
   router.post('/login', (req, res) => {
     withErrorHandler(res, async () => {
+      const {loginForm, password} = req.body;
 
+      const result = await User.authLogin(db, loginForm, password);
+      res.setHeader('session', await Sessions.createNew(result));
+      res.json({ userId: result });
     });
   });
 
@@ -45,6 +53,43 @@ export default function userRoutes(db: Database) {
       res.json(result);
     });
   });
+
+  /** PUT /user/update/email */
+  router.put('/update/email', (req, res) => {
+    withErrorHandler(res, async () => {
+      const sessionId = req.header('session');
+      const { email } = req.body;
+      const userId = Sessions.returnInfo(sessionId).userId;
+
+      const result = await User.newEmail(db, userId, email);
+      res.json(result);
+    });
+  });
+
+  /** PUT /user/update/password */
+  router.put('/update/password', (req, res) => {
+    withErrorHandler(res, async () => {
+      const sessionId = req.header('session');
+      const { newPassword, oldPassword } = req.body;
+      const userId = Sessions.returnInfo(sessionId).userId;
+
+      const result = await User.newPassword(db, userId, oldPassword, newPassword);
+      res.json(result);
+    });
+  });
+
+  /** PUT /user/update/email */
+  router.put('/update/username', (req, res) => {
+    withErrorHandler(res, async () => {
+      const sessionId = req.header('session');
+      const { username } = req.body;
+      const userId = Sessions.returnInfo(sessionId).userId;
+
+      const result = await User.newUsername(db, username, userId);
+      res.json(result);
+    });
+  });
+
 
   // update to field
 

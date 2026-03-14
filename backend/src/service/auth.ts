@@ -5,8 +5,7 @@ import { nanoid } from 'nanoid';
 import { ServerError } from '../errors';
 import * as Sessions from './sessions';
 
-
-async function authLogin(db:Database, loginForm:string, password:string){
+export async function authLogin(db:Database, loginForm:string, password:string){
     const info = await db.get("SELECT * from users WHERE (email = ? OR username = ?)", [loginForm, loginForm]);//idk what to do about here 
     if (!info){
         throw new Error ("User not found");
@@ -18,7 +17,7 @@ async function authLogin(db:Database, loginForm:string, password:string){
     return info.id;
 }
 
-async function authRegister(db:Database, password:string, username:string, email:string){
+export async function authRegister(db:Database, password:string, username:string, email:string){
     if (!validator.isEmail(email)){
         throw new Error("Invalid email address");
     }
@@ -51,7 +50,7 @@ async function authRegister(db:Database, password:string, username:string, email
     return userId;
 }
 
-async function newPassword(db:Database, id:string, oldPassword: string, newPassword:string) {
+export async function newPassword(db:Database, id:string, oldPassword: string, newPassword:string) {
    // get the old password from the database
     const currPassword = await db.get("SELECT password FROM users WHERE id = ?", [id]);
     const isPasswordValid = await bcrypt.compare(oldPassword, currPassword.password);
@@ -69,7 +68,7 @@ async function newPassword(db:Database, id:string, oldPassword: string, newPassw
     return {};
 }
 
-async function newEmail(db:Database, id:string, email:string) {
+export async function newEmail(db:Database, id:string, email:string) {
     // validate the email
     if (!validator.isEmail(email)){
         throw new Error("Invalid email address");
@@ -79,7 +78,7 @@ async function newEmail(db:Database, id:string, email:string) {
     return {};
 }
 
-async function newUsername(db:Database, username:string, id: string) {
+export async function newUsername(db:Database, username:string, id: string) {
     // get the current username
     const currUsername = await db.get("SELECT username FROM users WHERE id = ?", [id]);
     if (!currUsername) {
