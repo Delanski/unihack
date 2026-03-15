@@ -4,9 +4,13 @@ import { useAuth } from '../context/AuthContext';
 import styles from './Login.module.css';
 import bg from '../assets/backgrounds/pomme_room.png';
 
-export default function Login() {
-  const { login }   = useAuth();
-  const navigate    = useNavigate();
+interface Props {
+  onLogin: () => void;
+}
+
+export default function Login({ onLogin }: Props) {
+  const { login }             = useAuth();
+  const navigate              = useNavigate();
   const [error, setError]     = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -19,6 +23,7 @@ export default function Login() {
         (e.currentTarget.elements.namedItem('loginForm') as HTMLInputElement).value,
         (e.currentTarget.elements.namedItem('password') as HTMLInputElement).value,
       );
+      onLogin();
       navigate('/menu');
     } catch (err: any) {
       setError(err.message);
