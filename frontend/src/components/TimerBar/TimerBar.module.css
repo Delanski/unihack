@@ -1,0 +1,40 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  font-family: 'Lora', serif;
+  font-size: 13px;
+  color: var(--cream);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.track {
+  width: 18px;
+  height: 220px;
+  background: var(--brown-dark);
+  border: 2px solid var(--brown);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.fill {
+  width: 100%;
+  border-radius: 10px;
+  transition: height 1s linear;
+}
+
+.fill.study {
+  background: linear-gradient(to bottom, var(--red-study), var(--red-dark));
+}
+
+.fill.break {
+  background: linear-gradient(to bottom, var(--green-muted), var(--green-dark));
+}

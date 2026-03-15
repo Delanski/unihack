@@ -1,0 +1,24 @@
+.wrapper {
+  position: fixed;
+  bottom: 0;
+  right: 120px;
+  z-index: 40;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sprite {
+  height: min(620px, 75vh);
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.15s ease;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4));
+}
+
+.wrapper:hover .sprite {
+  transform: scale(1.02);
+}
+
+.wrapper:active .sprite {
+  transform: scale(0.97);
+}
