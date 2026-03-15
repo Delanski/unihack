@@ -89,6 +89,10 @@ export default function MainMenu() {
   };
 
   const getClickGroupDialogue = () => {
+    useEffect(() => {
+    // preload dialogue groups
+    getClickGroupDialogue();
+  }, []);
     clickGroupRef.current += 1;
     const group = clickGroupRef.current % 3;
 
@@ -164,3 +168,4 @@ export default function MainMenu() {
     </div>
   );
 }
+

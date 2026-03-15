@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -10,8 +11,11 @@ import Pomodoro from './pages/Pomodoro/Pomodoro';
 import Cutscenes from './pages/Cutscenes';
 import Statistics from './pages/Statistics';
 import MainMenu from './pages/MainMenu/MainMenu';
+import splashImage from './assets/backgrounds/mmSplashArt.png';
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(false);
+
   return (
     <AuthProvider>
       <BrowserRouter>

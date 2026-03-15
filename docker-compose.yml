@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3200:3200"
+    volumes:
+      - ./data:/app/data  # persists your SQLite db
+    environment:
+      - PORT=3200
+      - IP=0.0.0.0
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
