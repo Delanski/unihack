@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap');
+
+:root {
+  --cream:       #F5ECD7;
+  --beige:       #E8D5B0;
+  --brown-light: #C4956A;
+  --brown:       #8B5E3C;
+  --brown-dark:  #4A2E1A;
+  --green-muted: #7A9E7E;
+  --green-dark:  #4A7C59;
+  --yellow:      #D4A843;
+  --red-study:   #B85450;
+  --red-dark:    #8B3A38;
+  --text-dark:   #2C1810;
+  --text-mid:    #5C3D2E;
+  --overlay:     rgba(44, 24, 16, 0.45);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: #4A2E1A;
+  background: #4A2E1A;
+  overflow: hidden;
+}
+
+h1, h2, h3 {
+  font-family: 'Lora', serif;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

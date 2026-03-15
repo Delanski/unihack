@@ -155,3 +155,11 @@ async function initalisePomme(db: Database, userId: string) {
   // set to lvl 1 automatically
   // await db.run(`UPDATE relationship SET points = 500 WHERE user_id = ? AND char_id = 'pomme_tutorial'`, [userId])
 }
+export async function getMe(db: Database, userId: string) {
+  const user = await db.get(
+    'SELECT id, username, email FROM users WHERE id = ?',
+    [userId]
+  );
+  if (!user) throw new ServerError('', 'User not found');
+  return user;
+}

@@ -1,0 +1,117 @@
+.page {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+  z-index: 1;
+}
+
+.topNav {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  gap: 12px;
+}
+
+.navBtn {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  background: rgba(44, 24, 16, 0.6);
+  border: 1px solid #c1b88f;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.navBtn:hover {
+  background: rgba(74, 46, 26, 0.85);
+  transform: scale(1.08);
+}
+
+.navIcon {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.navTooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(44, 24, 16, 0.92);
+  color: #c1b88f;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #c1b88f;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 60;
+}
+
+.navBtn:hover .navTooltip {
+  opacity: 1;
+}
+
+.welcome {
+  position: absolute;
+  left: 120px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(44, 24, 16, 0.55);
+  border: 1px solid #c1b88f;
+  border-radius: 16px;
+  padding: 24px 32px;
+}
+
+.title {
+  font-family: 'Lora', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #c1b88f;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+.subtitle {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  color: #c1b88f;
+  opacity: 0.6;
+  text-align: center;
+  font-style: italic;
+}
