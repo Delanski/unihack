@@ -18,6 +18,16 @@ export default function userRoutes(db: Database) {
     });
   });
 
+  /** GET /user/me */
+  router.get('/me', (req, res) => {
+    withErrorHandler(res, async () => {
+      const sessionId = req.header('session');
+      const userId = Sessions.returnInfo(sessionId).userId;
+      const result = await User.getMe(db, userId);
+      res.json(result);
+    });
+  });
+
   /** POST /user/login */
   router.post('/login', (req, res) => {
     withErrorHandler(res, async () => {
