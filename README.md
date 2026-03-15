@@ -1,6 +1,8 @@
 # unihack
 no way currently to start frontend server, idk the command to
 
+THIS BRANCH IS NOT INTENDED FOR UNIHACK JUDGING. this is so members of our team can install, use and make edits on their personal devices :)
+
 ### NPM Scripts
 * npm start-backend: start the backend server - dont use yet
 * npm run lint: run ESLint - eslint is just a style fixer
