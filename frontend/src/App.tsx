@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Credits from './components/Credits/Credits';
-import SplashScreen from './components/SplashScreen/SplashScreen';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
@@ -20,16 +19,10 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        {showSplash && (
-          <SplashScreen
-            image={splashImage}
-            onDone={() => setShowSplash(false)}
-          />
-        )}
         <Credits />
         <Routes>
-          <Route path="/login"      element={<Login onLogin={() => setShowSplash(true)} />} />
-          <Route path="/register"   element={<Register onLogin={() => setShowSplash(true)} />} />
+          <Route path="/login"      element={<Login />} />
+          <Route path="/register"   element={<Register />} />
           <Route path="/menu"       element={<ProtectedRoute><MainMenu /></ProtectedRoute>} />
           <Route path="/todo"       element={<ProtectedRoute><Todo /></ProtectedRoute>} />
           <Route path="/pomodoro"   element={<ProtectedRoute><Pomodoro /></ProtectedRoute>} />

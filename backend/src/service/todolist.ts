@@ -6,9 +6,8 @@ const dailyRewardedToDo = 3;
 const pointsAwarded = 50;
 
 export async function createTask(db: Database, userId: string, task: string) {
-  const existingToDo = await db.get('SELECT COUNT(id) FROM to_do WHERE created_by = ?', [userId]);
-
-  if (existingToDo >= toDoLimit) throw new ServerError('', 'Todo limit reached');
+  const { count } = await db.get('SELECT COUNT(*) as count FROM to_do WHERE created_by = ?', [userId]);
+  if (count >= toDoLimit) throw new ServerError('', 'Todo limit reached');
 
   await db.run('INSERT INTO to_do (created_by, task) VALUES (?, ?)', [userId, task]);
 
@@ -38,7 +37,7 @@ export async function completeTask(db: Database, userId: string, id: number) {
 
   const { count } = await db.get('SELECT count(*) as count FROM to_do WHERE created_by = ? AND completed_at = date(\'now\')', [userId]);
   const points = count < dailyRewardedToDo ? pointsAwarded : 0;
-    console.log(points)
+  
   await db.run(`UPDATE to_do SET completed_at = date('now') WHERE id = ?`, [id]);
 
   await db.run(`
