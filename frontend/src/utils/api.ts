@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3200';
+const BASE_URL = 'http://127.0.0.1:3200';
 
 export const apiFetch = (path: string, options: RequestInit = {}) => {
   const session = localStorage.getItem('session');
