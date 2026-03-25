@@ -26,8 +26,8 @@ export default function Credits() {
           </div>
 
           <div className={styles.person}>
-            <span className={styles.name}>ethan - art</span>
-            <span className={styles.role}>@doodletyi on instagram</span>
+            <span className={styles.name}>doodle - art</span>
+            <span className={styles.role}>@doodletyi on instagram!</span>
           </div>
 
           <div className={styles.person}>
