@@ -1,8 +1,16 @@
 # unihack
-no way currently to start frontend server, idk the command to
+Studious Slice (of Life) is a study app meets dating sim! Study and cross off tasks from your to-do list to gain affection points-- which you can then use to go on dates with the main character Pomme! 
 
-THIS BRANCH IS NOT INTENDED FOR UNIHACK JUDGING. this is so members of our team can install, use and make edits on their personal devices :)
+## Frameworks: Node.js, React + Vite
 
+## Currently Implemented:
+- Timer and affection points
+- To do list and affection points
+- Interactions with Pomme (tapping Pomme triggers dialogue)
+- Stand in scene
+## Work In Progress
+- Cutscenes and Storyline
+- 
 ### NPM Scripts
 * npm start-backend: start the backend server - dont use yet
 * npm run lint: run ESLint - eslint is just a style fixer
@@ -17,4 +25,6 @@ THIS BRANCH IS NOT INTENDED FOR UNIHACK JUDGING. this is so members of our team 
 
 * npm run dev in both front and back end
 * ensure  api.ts in /utils has the correct address for wherever the back end is being hosted
-* 
+
+## Known Bugs:
+- Loading animation runs twice
